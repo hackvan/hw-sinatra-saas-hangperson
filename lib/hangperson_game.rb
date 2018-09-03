@@ -9,16 +9,13 @@ class HangpersonGame
   end
 
   def guess(letter)
-    if letter.nil? || letter.empty? || letter !~ /[a-z]/i
-      raise ArgumentError
-    end
+    raise ArgumentError if letter !~ /^[a-z]$/i
     
     letter_downcase = letter.downcase
     return false if @guesses.include?(letter_downcase) || @wrong_guesses.include?(letter_downcase)
 
     return @word.include?(letter_downcase) ? @guesses << letter_downcase : @wrong_guesses << letter_downcase
   end
-
 
   def word_with_guesses
     word_status = '-' * @word.size
@@ -33,15 +30,15 @@ class HangpersonGame
   end
 
   def check_win_or_lose
+    status = :play
     if @wrong_guesses.size >= 7
-      return :lose
-    elsif word_with_guesses.include?('-')
-      return :play
-    else
-      return :win
+      status = :lose
+    elsif word_with_guesses == @word
+      status = :win
     end
+    return status
   end
-  
+
   # You can test it by running $ bundle exec irb -I. -r app.rb
   # And then in the irb: irb(main):001:0> HangpersonGame.get_random_word
   #  => "cooking"   <-- some random word
